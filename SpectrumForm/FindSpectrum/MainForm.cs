@@ -52,5 +52,24 @@ namespace FindSpectrum
             this.Controls.Add(this.chart1);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
         }
+
+        private void runButton_Click(object sender, EventArgs e)
+        {
+            MethodMath mm = new MethodMath();
+
+            mm.R = Convert.ToDouble(rTextBox.Text);
+            mm.E = Convert.ToDouble(eTextBox.Text);
+            mm.K = Convert.ToDouble(kTextBox.Text);
+
+            var step = 0.1;
+
+            var tmp = mm.FindAll(step);
+
+            for (var i  = -mm.R; i <= mm.R; i += step)
+            {
+                int index = Convert.ToInt32((i + mm.R) / step);
+                chart1.Series[0].Points.AddXY(i, tmp[0][index]);
+            }
+        }
     }
 }
