@@ -7,12 +7,28 @@ namespace FindSpectrum
 {
     class MethodMath
     {
+        public class Complex
+        {
+            public double Real { get; set; }
+            public double Image { get; set; }
+            public double Abs
+            {
+                get => Math.Sqrt(Real * Real + Image * Image);
+            }
+        }
+
         public double E { get; set; }
         public double R { get; set; }
         public double Rx { get; set; }
         public double K { get; set; }
 
-        
+
+        public double B { get; set; }
+        public double C { get; set; }
+        public double D { get; set; }
+
+
+
         private double Fi { get; set; }
 
         double U(double x)
@@ -62,7 +78,7 @@ namespace FindSpectrum
             return fi + h / 6 * (k1 + 2 * k2 + 2 * k3 + k4);
         }
 
-        public List<List<double>> FindAll(double step)
+        public List<List<double>> FindStationaryPsi(double step)
         {
 
             List<double> tmpFi = new List<double>();
@@ -105,6 +121,23 @@ namespace FindSpectrum
             }
 
             return tmpPsi;
+        }
+
+        public void FindEvolution(double step)
+        {
+            List<double> x = new List<double>(); 
+            List<List<double>> tmpPsi = new List<List<double>>();
+            for (double i = 0; i < 2*R; i+=step)
+            {
+                x.Add(i);
+            }
+
+            List<double> tmpA = new List<double>();
+            List<double> tmpB = new List<double>();
+            List<double> tmpC = new List<double>();
+            List<double> tmpD = new List<double>();
+
+            tmpA.Add(-step/((x[2]-x[0])*(x[1] - x[0])));
         }
     }
 }
