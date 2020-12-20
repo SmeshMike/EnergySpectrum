@@ -12,9 +12,13 @@ namespace FindSpectrum
 {
     public partial class MainForm : Form
     {
+        MethodMath mm;
+        private List<List<double>> chart;
         public MainForm()
         {
             InitializeComponent();
+            mm = new MethodMath();
+            chart = new List<List<double>>();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -55,20 +59,30 @@ namespace FindSpectrum
 
         private void runButton_Click(object sender, EventArgs e)
         {
-            MethodMath mm = new MethodMath();
-
             mm.R = Convert.ToDouble(rTextBox.Text);
-            mm.E = Convert.ToDouble(eTextBox.Text);
+            
             mm.K = Convert.ToDouble(kTextBox.Text);
 
-            var step = 0.1;
+            var maxK = Convert.ToInt32(maxKTextBox.Text);
 
-            var tmp = mm.FindAll(step);
+            var step = 0.001;
 
-            for (var i  = -mm.R; i <= mm.R; i += step)
+            chart = mm.FindStationaryPsi(step, maxK);
+
+
+        }
+
+        private void drawButton_Click(object sender, EventArgs e)
+        {
+            chart1.Series[0].Points.Clear();
+           var step = 0.001;
+
+            var k = Convert.ToInt32(orderTextBox.Text);
+
+            for (var i = -mm.R; i <= mm.R; i += step)
             {
                 int index = Convert.ToInt32((i + mm.R) / step);
-                chart1.Series[0].Points.AddXY(i, tmp[0][index]);
+                chart1.Series[0].Points.AddXY(i, chart[k][index]);
             }
         }
     }
