@@ -14,11 +14,15 @@ namespace FindSpectrum
     {
         MethodMath mm;
         private List<List<double>> chart;
+        private List<List<MethodMath.Complex>> chartComplex;
         public MainForm()
         {
             InitializeComponent();
-            mm = new MethodMath();
+            var r = Convert.ToDouble(rTextBox.Text);
+            var step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
+            mm = new MethodMath(step,r);
             chart = new List<List<double>>();
+            
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -57,33 +61,61 @@ namespace FindSpectrum
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
         }
 
-        private void runButton_Click(object sender, EventArgs e)
+        private void drawButton_Click(object sender, EventArgs e)
+        {
+            chart1.Series[0].Points.Clear();
+           
+            var k = Convert.ToInt32(orderTextBox.Text);
+
+            for (var i = -mm.R; i <= mm.R; i += mm.Step)
+            {
+                int index = Convert.ToInt32((i + mm.R) / mm.Step);
+                chart1.Series[0].Points.AddXY(i, chart[k][index]);
+            }
+        }
+
+        private void runStaticButtonClick(object sender, EventArgs e)
         {
             mm.R = Convert.ToDouble(rTextBox.Text);
-            
+
+            mm.Step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
             mm.K = Convert.ToDouble(kTextBox.Text);
 
             var maxK = Convert.ToInt32(maxKTextBox.Text);
 
-            var step = 0.001;
-
-            chart = mm.FindStationaryPsi(step, maxK);
-
-
+            chart = mm.FindStationaryPsi(maxK);
         }
 
-        private void drawButton_Click(object sender, EventArgs e)
+        private void runEvolutionButtonClick(object sender, EventArgs e)
+        {
+            mm.R = Convert.ToDouble(rTextBox.Text);
+
+            mm.Step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
+            mm.K = Convert.ToDouble(kTextBox.Text);
+
+            var maxT = Convert.ToInt32(tMaxTextBox.Text);
+
+            chartComplex = mm.FindEvolution(maxT);
+        }
+
+        private void drawEvolutionButton_Click(object sender, EventArgs e)
         {
             chart1.Series[0].Points.Clear();
-           var step = 0.001;
 
-            var k = Convert.ToInt32(orderTextBox.Text);
+            var t = Convert.ToInt32(tTextBox.Text);
 
-            for (var i = -mm.R; i <= mm.R; i += step)
+            for (var i = -mm.R; i <= mm.R; i += mm.Step)
             {
-                int index = Convert.ToInt32((i + mm.R) / step);
-                chart1.Series[0].Points.AddXY(i, chart[k][index]);
+                int index = Convert.ToInt32((i + mm.R) / mm.Step);
+                chart1.Series[0].Points.AddXY(i, chartComplex[t][index].Real);
             }
+        }
+
+        private void refreshButton_Click(object sender, EventArgs e)
+        {
+            var step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
+            var r = Convert.ToDouble(rTextBox.Text);
+            mm.Refresh(step, r);
         }
     }
 }
