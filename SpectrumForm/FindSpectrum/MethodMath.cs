@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FindSpectrum
 {
-    class MethodMath
+    public class MethodMath
     {
         public class Complex : IEnumerable<Complex>
         {
@@ -41,6 +41,8 @@ namespace FindSpectrum
             public Complex()
             {
             }
+
+
 
             public static Complex operator +(Complex a, Complex b)
                 => new Complex(a.Real + b.Real , a.Image + b.Image);

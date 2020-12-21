@@ -48,11 +48,12 @@ namespace FindSpectrum
             this.tTextBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.refreshButton = new System.Windows.Forms.Button();
+            this.spectrumButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // runStaticButton
             // 
-            this.runStaticButton.Location = new System.Drawing.Point(976, 488);
+            this.runStaticButton.Location = new System.Drawing.Point(975, 450);
             this.runStaticButton.Name = "runStaticButton";
             this.runStaticButton.Size = new System.Drawing.Size(75, 23);
             this.runStaticButton.TabIndex = 0;
@@ -80,7 +81,7 @@ namespace FindSpectrum
             // 
             // orderTextBox
             // 
-            this.orderTextBox.Location = new System.Drawing.Point(976, 459);
+            this.orderTextBox.Location = new System.Drawing.Point(975, 421);
             this.orderTextBox.Name = "orderTextBox";
             this.orderTextBox.Size = new System.Drawing.Size(75, 23);
             this.orderTextBox.TabIndex = 4;
@@ -90,7 +91,7 @@ namespace FindSpectrum
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1007, 441);
+            this.label2.Location = new System.Drawing.Point(1006, 403);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 15);
             this.label2.TabIndex = 3;
@@ -134,7 +135,7 @@ namespace FindSpectrum
             // 
             // drawButton
             // 
-            this.drawButton.Location = new System.Drawing.Point(976, 518);
+            this.drawButton.Location = new System.Drawing.Point(975, 480);
             this.drawButton.Name = "drawButton";
             this.drawButton.Size = new System.Drawing.Size(75, 23);
             this.drawButton.TabIndex = 9;
@@ -162,7 +163,7 @@ namespace FindSpectrum
             // 
             // drawEvolutionButton
             // 
-            this.drawEvolutionButton.Location = new System.Drawing.Point(1066, 518);
+            this.drawEvolutionButton.Location = new System.Drawing.Point(1065, 480);
             this.drawEvolutionButton.Name = "drawEvolutionButton";
             this.drawEvolutionButton.Size = new System.Drawing.Size(74, 23);
             this.drawEvolutionButton.TabIndex = 15;
@@ -190,7 +191,7 @@ namespace FindSpectrum
             // 
             // runEvolutionButton
             // 
-            this.runEvolutionButton.Location = new System.Drawing.Point(1066, 488);
+            this.runEvolutionButton.Location = new System.Drawing.Point(1065, 450);
             this.runEvolutionButton.Name = "runEvolutionButton";
             this.runEvolutionButton.Size = new System.Drawing.Size(75, 23);
             this.runEvolutionButton.TabIndex = 12;
@@ -200,7 +201,7 @@ namespace FindSpectrum
             // 
             // tTextBox
             // 
-            this.tTextBox.Location = new System.Drawing.Point(1066, 459);
+            this.tTextBox.Location = new System.Drawing.Point(1065, 421);
             this.tTextBox.Name = "tTextBox";
             this.tTextBox.Size = new System.Drawing.Size(74, 23);
             this.tTextBox.TabIndex = 17;
@@ -210,7 +211,7 @@ namespace FindSpectrum
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(1128, 442);
+            this.label7.Location = new System.Drawing.Point(1127, 404);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(11, 15);
             this.label7.TabIndex = 16;
@@ -226,11 +227,22 @@ namespace FindSpectrum
             this.refreshButton.UseVisualStyleBackColor = true;
             this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
+            // spectrumButton
+            // 
+            this.spectrumButton.Location = new System.Drawing.Point(975, 509);
+            this.spectrumButton.Name = "spectrumButton";
+            this.spectrumButton.Size = new System.Drawing.Size(75, 23);
+            this.spectrumButton.TabIndex = 19;
+            this.spectrumButton.Text = "Spectrum";
+            this.spectrumButton.UseVisualStyleBackColor = true;
+            this.spectrumButton.Click += new System.EventHandler(this.spectrumButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1152, 597);
+            this.Controls.Add(this.spectrumButton);
             this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.tTextBox);
             this.Controls.Add(this.label7);
@@ -280,6 +292,7 @@ namespace FindSpectrum
         private System.Windows.Forms.TextBox tTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button refreshButton;
+        private System.Windows.Forms.Button spectrumButton;
     }
 }
 

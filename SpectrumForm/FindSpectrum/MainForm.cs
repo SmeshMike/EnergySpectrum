@@ -15,14 +15,15 @@ namespace FindSpectrum
         MethodMath mm;
         private List<List<double>> chart;
         private List<List<MethodMath.Complex>> chartComplex;
+
         public MainForm()
         {
             InitializeComponent();
             var r = Convert.ToDouble(rTextBox.Text);
             var step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
-            mm = new MethodMath(step,r);
+            mm = new MethodMath(step, r);
             chart = new List<List<double>>();
-            
+
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -31,9 +32,9 @@ namespace FindSpectrum
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            
+
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.chart1)).BeginInit();
 
             this.chart1.BorderlineColor = System.Drawing.Color.Black;
             this.chart1.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
@@ -58,13 +59,13 @@ namespace FindSpectrum
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
             this.Controls.Add(this.chart1);
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.chart1)).EndInit();
         }
 
         private void drawButton_Click(object sender, EventArgs e)
         {
             chart1.Series[0].Points.Clear();
-           
+
             var k = Convert.ToInt32(orderTextBox.Text);
 
             for (var i = -mm.R; i <= mm.R; i += mm.Step)
@@ -117,5 +118,37 @@ namespace FindSpectrum
             var r = Convert.ToDouble(rTextBox.Text);
             mm.Refresh(step, r);
         }
+
+        private void spectrumButton_Click(object sender, EventArgs e)
+        {
+            chart1.Series[0].Points.Clear();
+            int pow = 1;
+            int tmp = chart[0].Count;
+            while (tmp / 2>1)
+            {
+                tmp /= 2;
+                pow++;
+            }
+            while(chart[0].Count< Math.Pow(2, pow+1))
+                for (int i = 0; i < chart.Count; i++)
+                {
+                    chart[i].Add(0);
+                }
+
+            var k = Convert.ToInt32(orderTextBox.Text);
+            List<MethodMath.Complex> tmpChart = new List<MethodMath.Complex>();
+            foreach (var element in chart[k])
+            {
+             tmpChart.Add(new MethodMath.Complex(element, 0));   
+            }
+            var tmpArr = FFT.fft(tmpChart.ToArray());
+
+            for (var i = 0; i < tmpArr.Length; i ++)
+            {
+                int index = Convert.ToInt32(i);
+                chart1.Series[0].Points.AddXY(i, tmpArr[i].Abs);
+            }
+        }
+
     }
 }
