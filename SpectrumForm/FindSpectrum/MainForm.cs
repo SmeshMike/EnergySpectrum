@@ -77,10 +77,10 @@ namespace FindSpectrum
 
         private void runStaticButtonClick(object sender, EventArgs e)
         {
-            mm.R = Convert.ToDouble(rTextBox.Text);
-
-            mm.Step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
-            mm.K = Convert.ToDouble(kTextBox.Text);
+            var step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
+            var r = Convert.ToDouble(rTextBox.Text);
+            var k = Convert.ToDouble(kTextBox.Text);
+            mm.Refresh(step, r, k);
 
             var maxK = Convert.ToInt32(maxKTextBox.Text);
 
@@ -89,10 +89,10 @@ namespace FindSpectrum
 
         private void runEvolutionButtonClick(object sender, EventArgs e)
         {
-            mm.R = Convert.ToDouble(rTextBox.Text);
-
-            mm.Step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
-            mm.K = Convert.ToDouble(kTextBox.Text);
+            var step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
+            var r = Convert.ToDouble(rTextBox.Text);
+            var k = Convert.ToDouble(kTextBox.Text);
+            mm.Refresh(step, r, k);
 
             var maxT = Convert.ToInt32(tMaxTextBox.Text);
 
@@ -110,13 +110,6 @@ namespace FindSpectrum
                 int index = Convert.ToInt32((i + mm.R) / mm.Step);
                 chart1.Series[0].Points.AddXY(i, chartComplex[t][index].Real);
             }
-        }
-
-        private void refreshButton_Click(object sender, EventArgs e)
-        {
-            var step = Convert.ToDouble(stepTextBox.Text.Replace('.', ','));
-            var r = Convert.ToDouble(rTextBox.Text);
-            mm.Refresh(step, r);
         }
 
         private void spectrumButton_Click(object sender, EventArgs e)

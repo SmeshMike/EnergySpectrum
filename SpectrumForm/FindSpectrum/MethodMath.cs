@@ -42,8 +42,6 @@ namespace FindSpectrum
             {
             }
 
-
-
             public static Complex operator +(Complex a, Complex b)
                 => new Complex(a.Real + b.Real , a.Image + b.Image);
             public static Complex operator -(Complex a, Complex b)
@@ -64,27 +62,26 @@ namespace FindSpectrum
             Rx = new List<List<double>>();
             E = new List<double>();
             _x = new List<double>();
-            R = r;
-            Step = step;
-            for (double i = -R; i <= R; i += Step)
-            {
-                _x.Add(i);
-            }
+
         }
 
-        public void Refresh(double step, double r)
+        public void Refresh(double step, double r, double k)
         {
             R = r;
+            K = k;
             _x.Clear();
+            Fi.Clear();
+            Rx.Clear();
+            E.Clear();
             Step = step;
-            for (double i = -R; i <= R; i += Step)
+            for (double i = 0; i <= 2*R/step; i ++)
             {
-                _x.Add(i);
+                _x.Add(i*step - r);
             }
         }
 
 
-
+        private double tao = 2;
         private List<List<double>> Psi { get; set; }
 
         private List<List<double>> Fi { get; set; }
@@ -96,26 +93,45 @@ namespace FindSpectrum
         public double Order { get; set; }
         private List<double> _x;
 
+        //Complex A(int k)
+        //{
+        //    return new Complex() {{Convert.ToDouble(0), Convert.ToDouble(-Step / ((_x[k + 1] - _x[k - 1])*(_x[k] - _x[k - 1])))}};
+        //}
+
+        //Complex B(int k)
+        //{
+        //    return new Complex() { { Convert.ToDouble(0), Convert.ToDouble(-Step / ((_x[k + 1] - _x[k - 1]) * (_x[k+1] - _x[k]))) } };
+        //}
+
+        //Complex C(int k)
+        //{
+        //    return new Complex() { { Convert.ToDouble(1), Convert.ToDouble(Step * U(_x[k])/2 + Step/(_x[k+1] - _x[k-1]) *(1/(_x[k+1] - _x[k]) + 1/(_x[k] - _x[k-1]))) } };
+        //}
+
+        //Complex D(int k, List<Complex> psi)
+        //{
+        //    return new Complex() { { psi[k].Real + Step / 2 * (2 / (_x[k + 1] - _x[k - 1]) * ((psi[k + 1].Image - psi[k].Image) / (_x[k + 1] - _x[k]) - (psi[k].Image - psi[k - 1].Image) / (_x[k] - _x[k - 1]) - U(_x[k] * psi[k].Image))), Step/2 *(2/(_x[k+1]-_x[k-1])*((psi[k+1].Real - psi[k].Real) /(_x[k+1]-_x[k]) - (psi[k].Real - psi[k-1].Real) /(_x[k] - _x[k-1]) - U(_x[k]*psi[k].Real))) } };
+        //}
         Complex A(int k)
         {
-            return new Complex() {{Convert.ToDouble(0), Convert.ToDouble(-Step / ((_x[k + 1] - _x[k - 1])*(_x[k] - _x[k - 1])))}};
+            return new Complex() { { Convert.ToDouble(0), Convert.ToDouble(-tao / ((2* Step) * (Step))) } };
         }
 
         Complex B(int k)
         {
-            return new Complex() { { Convert.ToDouble(0), Convert.ToDouble(-Step / ((_x[k + 1] - _x[k - 1]) * (_x[k+1] - _x[k]))) } };
+            return new Complex() { { Convert.ToDouble(0), Convert.ToDouble(-tao / ((2* Step) * (Step))) } };
         }
 
         Complex C(int k)
         {
-            return new Complex() { { Convert.ToDouble(1), Convert.ToDouble(Step * U(_x[k])/2 + Step/(_x[k+1] - _x[k-1]) *(1/(_x[k+1] - _x[k]) + 1/(_x[k] - _x[k-1]))) } };
+            return new Complex() { { Convert.ToDouble(1), Convert.ToDouble(tao * U(_x[k]) / 2 + tao / (2* Step) * (1 / (Step) + 1 / (Step))) } };
         }
 
         Complex D(int k, List<Complex> psi)
         {
-            return new Complex() { { psi[k].Real + Step / 2 * (2 / (_x[k + 1] - _x[k - 1]) * ((psi[k + 1].Image - psi[k].Image) / (_x[k + 1] - _x[k]) - (psi[k].Image - psi[k - 1].Image) / (_x[k] - _x[k - 1]) - U(_x[k] * psi[k].Image))), Step/2 *(2/(_x[k+1]-_x[k-1])*((psi[k+1].Real - psi[k].Real) /(_x[k+1]-_x[k]) - (psi[k].Real - psi[k-1].Real) /(_x[k] - _x[k-1]) - U(_x[k]*psi[k].Real))) } };
+            return new Complex() { { psi[k].Real + tao / 2 * (2 / (2* Step) * ((psi[k + 1].Image - psi[k].Image) / (Step) - (psi[k].Image - psi[k - 1].Image) / (Step) - U(_x[k] * psi[k].Image))), tao / 2 * (2 / (2* Step) * ((psi[k + 1].Real - psi[k].Real) / (Step) - (psi[k].Real - psi[k - 1].Real) / (Step) - U(_x[k] * psi[k].Real))) } };
         }
-        
+
         double U(double x)
         {
             return 1 / 2 * K * x * x;
@@ -139,27 +155,27 @@ namespace FindSpectrum
         double GoFiRungeKutta( double fi, double r, double e)
         {
             var k1 = FiFunction(fi, r, e);
-            var k2 = FiFunction(Step / 2 * k1, r + Step / 2, e);
-            var k3 = FiFunction(Step / 2 * k2, r + Step / 2, e);
-            var k4 = FiFunction(Step * k3, r + Step, e);
+            var k2 = FiFunction(fi + Step / 2 * k1, r + Step / 2, e);
+            var k3 = FiFunction(fi + Step / 2 * k2, r + Step / 2, e);
+            var k4 = FiFunction(fi + Step * k3, r + Step, e);
             return fi + Step / 6 * (k1 + 2 * k2 + 2 * k3 + k4);
         }
 
         double GoRxRungeKutta(double fi, double rx, double r, double e)
         {
             var k1 = RxFunction(fi, rx, r, e);
-            var k2 = RxFunction(Step / 2 * k1, rx, r + Step / 2, e);
-            var k3 = RxFunction(Step / 2 * k2, rx, r + Step / 2, e);
-            var k4 = RxFunction(Step * k3, rx, r + Step, e);
+            var k2 = RxFunction(fi +Step / 2 * k1, rx + Step / 2, r, e);
+            var k3 = RxFunction(fi + Step / 2 * k2, rx + Step / 2, r , e);
+            var k4 = RxFunction(fi + Step * k3, rx + Step, r , e);
             return fi + Step / 6 * (k1 + 2 * k2 + 2 * k3 + k4);
         }
 
         double GoDPsiRungeKutta(double fi, double rx)
         {
             var k1 = dPsiFunction(fi, rx);
-            var k2 = dPsiFunction(Step / 2 * k1, rx);
-            var k3 = dPsiFunction(Step / 2 * k2, rx);
-            var k4 = dPsiFunction(Step * k3, rx);
+            var k2 = dPsiFunction(fi + Step / 2 * k1, rx);
+            var k3 = dPsiFunction(fi + Step / 2 * k2, rx);
+            var k4 = dPsiFunction(fi + Step * k3, rx);
             return fi + Step / 6 * (k1 + 2 * k2 + 2 * k3 + k4);
         }
 
@@ -192,11 +208,11 @@ namespace FindSpectrum
             {
                 tmpFi1.Add(Math.PI / 2);
                 tmpFi2.Add(Math.PI / 2);
-                middle = (from + 15*to) / 16;
+                middle = (from + to) / 2;
                 for(var i =1; i < _x.Count; ++i)
                 {
                     tmpFi1.Add(GoFiRungeKutta(tmpFi1[^1], _x[i], from));
-                    tmpFi2.Add(GoFiRungeKutta(tmpFi2[^1], _x[i], to));
+                    tmpFi2.Add(GoFiRungeKutta(tmpFi2[^1], _x[i], middle));
                 }
 
                 var fLeft = tmpFi1[^1] + (2 * k + 1) * Math.PI / 2;
@@ -216,18 +232,16 @@ namespace FindSpectrum
 
         public List<List<double>> FindStationaryPsi(int count)
         {
-            double e = 5;
-
             for (int k = 0; k < count; k++)
             {
                 Fi.Add(new List<double>());
                 Fi[k].Add(Math.PI / 2);
-                E.Add(GoBisectionMethodVer2(0, 300, 0.001, k));
+                E.Add(GoBisectionMethodVer2(-300, 300, 0.00001, k));
 
 
                 for(var i = 1; i < _x.Count; ++i)
                 {
-                    Fi[k].Add(GoFiRungeKutta(Fi[k][^1], -_x[i], E[k]));
+                    Fi[k].Add(GoFiRungeKutta(Fi[k][^1], _x[i], E[k]));
                 }
             }
 
@@ -299,12 +313,6 @@ namespace FindSpectrum
                 tmpPsi0[^1].Add(new Complex(0, 0));
                 for (int i = _x.Count - 2; i > -1; --i)
                 {
-                    var a = alpha[i];
-                    var ps = tmpPsi0[^1][^1];
-                    var b = beta[i];
-                    var tmp1 = a * ps;
-                    var tmp2 = tmp1 + b;
-
                     tmpPsi0[^1].Add((alpha[i] * tmpPsi0[^1][^1]) + beta[i]);
                 }
 
